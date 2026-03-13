@@ -1,0 +1,55 @@
+<%- include('../partials/header') %>
+
+<div class="container mx-auto p-6 max-w-2xl fade-in-on-scroll">
+  <h1 class="text-4xl font-bold text-center py-10">Contact TechSpark</h1>
+
+  <!-- Flash messages -->
+  <% if (success_msg && success_msg.length > 0) { %>
+    <div class="bg-green-600 text-white p-3 rounded mb-4"><%= success_msg %></div>
+  <% } %>
+  <% if (error_msg && error_msg.length > 0) { %>
+    <div class="bg-red-600 text-white p-3 rounded mb-4"><%= error_msg %></div>
+  <% } %>
+
+  <div class="bg-gray-800 p-8 rounded-lg mb-8">
+    <p class="text-xl mb-4">Have questions? Reach out to us!</p>
+    
+    <div class="space-y-4 mb-8">
+      <div>
+        <h3 class="font-bold text-blue-400">Email</h3>
+        <p>techspark.navkis@gmail.com</p>
+      </div>
+      <div>
+        <h3 class="font-bold text-blue-400">Instagram</h3>
+        <p>@techspark.navkis</p>
+      </div>
+      <div>
+        <h3 class="font-bold text-blue-400">Location</h3>
+        <p>Navkis College of Engineering, Hassan</p>
+      </div>
+    </div>
+
+    <!-- Contact Form -->
+    <form action="/contact" method="POST" class="space-y-4">
+      <div>
+        <label class="block text-gray-300 mb-2">Your Name</label>
+        <input type="text" name="name" required class="w-full p-3 rounded bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-blue-500">
+      </div>
+      <div>
+        <label class="block text-gray-300 mb-2">Your Email</label>
+        <input type="email" name="email" required class="w-full p-3 rounded bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-blue-500">
+      </div>
+      <div>
+        <label class="block text-gray-300 mb-2">Subject</label>
+        <input type="text" name="subject" required class="w-full p-3 rounded bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-blue-500">
+      </div>
+      <div>
+        <label class="block text-gray-300 mb-2">Message</label>
+        <textarea name="message" rows="5" required class="w-full p-3 rounded bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-blue-500"></textarea>
+      </div>
+      <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded transition">Send Message</button>
+    </form>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,37 @@
+<%- include('../partials/header') %>
+
+<div class="container mx-auto p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">Announcements</h1>
+    <a href="/admin/announcements/new" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded">+ New Announcement</a>
+  </div>
+
+  <% if (success_msg && success_msg.length > 0) { %>
+    <div class="bg-green-600 text-white p-3 rounded mb-4"><%= success_msg %></div>
+  <% } %>
+  <% if (error_msg && error_msg.length > 0) { %>
+    <div class="bg-red-600 text-white p-3 rounded mb-4"><%= error_msg %></div>
+  <% } %>
+
+  <div class="space-y-4">
+    <% announcements.forEach(ann => { %>
+      <div class="bg-gray-800 p-5 rounded-lg">
+        <div class="flex justify-between items-start">
+          <div>
+            <h3 class="text-xl font-bold"><%= ann.title %></h3>
+            <p class="text-gray-400 mt-1"><%= ann.content %></p>
+            <p class="text-sm text-blue-300 mt-2"><%= new Date(ann.createdAt).toLocaleString() %></p>
+          </div>
+          <div class="flex space-x-3">
+            <a href="/admin/announcements/edit/<%= ann._id %>" class="text-blue-400 hover:text-blue-300">Edit</a>
+            <form action="/admin/announcements/delete/<%= ann._id %>" method="POST">
+              <button type="submit" class="text-red-500 hover:text-red-700" onclick="return confirm('Delete this announcement?')">Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

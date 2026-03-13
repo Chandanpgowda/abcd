@@ -1,0 +1,81 @@
+<%- include('../partials/header') %>
+
+<h1 class="text-4xl font-bold text-center py-10 fade-in-on-scroll">Events</h1>
+
+<div class="container mx-auto p-6">
+  <!-- Upcoming Events -->
+  <h2 class="text-2xl font-bold mb-4 fade-in-on-scroll">Upcoming Events</h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12 fade-in-on-scroll">
+    <% if (upcoming && upcoming.length > 0) { %>
+      <% upcoming.forEach((event, index) => { %>
+        <div class="bg-gray-800 p-4 rounded-lg shadow-lg hover:shadow-2xl transition transform hover:scale-105 hover-grow fade-in-on-scroll delay-<%= index+1 %>">
+          <% if (event.image) { %>
+            <img src="<%= event.image %>" alt="<%= event.title %>" class="w-full h-48 object-cover rounded mb-3">
+          <% } else { %>
+            <div class="w-full h-48 bg-gray-700 flex items-center justify-center text-4xl mb-3">📅</div>
+          <% } %>
+          <h3 class="text-xl font-bold"><%= event.title %></h3>
+          <p class="text-gray-400"><%= event.description %></p>
+          <p class="text-blue-300 mt-2"><%= new Date(event.date).toLocaleDateString() %></p>
+          
+          <div class="mt-3 bg-blue-900 text-white p-2 rounded text-center">
+            <div class="countdown-timer text-sm font-mono" data-date="<%= event.date.toISOString() %>">
+              Loading...
+            </div>
+          </div>
+          
+          <% if (event.googleFormUrl) { %>
+            <a href="<%= event.googleFormUrl %>" target="_blank" class="inline-block mt-4 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Register (External)</a>
+          <% } else { %>
+            <a href="/events/register/<%= event._id %>" class="inline-block mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Register Now</a>
+          <% } %>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <p class="text-gray-400">No upcoming events.</p>
+    <% } %>
+  </div>
+
+  <!-- Past Events -->
+  <h2 class="text-2xl font-bold mb-4 fade-in-on-scroll">Past Events</h2>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 fade-in-on-scroll">
+    <% if (past && past.length > 0) { %>
+      <% past.forEach((event, index) => { %>
+        <div class="bg-gray-800 p-4 rounded-lg opacity-75 hover:opacity-100 transition fade-in-on-scroll delay-<%= index+1 %>">
+          <% if (event.image) { %>
+            <img src="<%= event.image %>" alt="<%= event.title %>" class="w-full h-48 object-cover rounded mb-3">
+          <% } %>
+          <h3 class="text-xl font-bold"><%= event.title %></h3>
+          <p class="text-gray-400"><%= event.description %></p>
+          <p class="text-gray-500 mt-2"><%= new Date(event.date).toLocaleDateString() %></p>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <p class="text-gray-400">No past events.</p>
+    <% } %>
+  </div>
+</div>
+
+<!-- Countdown Timer Script -->
+<script>
+  function updateCountdowns() {
+    document.querySelectorAll('.countdown-timer').forEach(el => {
+      const eventDate = new Date(el.dataset.date).getTime();
+      const now = new Date().getTime();
+      const diff = eventDate - now;
+      if (diff < 0) {
+        el.innerText = 'Event started!';
+        return;
+      }
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (86400000)) / (3600000));
+      const minutes = Math.floor((diff % 3600000) / 60000);
+      const seconds = Math.floor((diff % 60000) / 1000);
+      el.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    });
+  }
+  updateCountdowns();
+  setInterval(updateCountdowns, 1000);
+</script>
+
+<%- include('../partials/footer') %>

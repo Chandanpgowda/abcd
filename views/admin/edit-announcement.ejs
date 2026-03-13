@@ -1,0 +1,29 @@
+<%- include('../partials/header') %>
+
+<div class="max-w-2xl mx-auto bg-gray-800 p-8 rounded-lg mt-10">
+  <h2 class="text-2xl font-bold mb-6">Edit Announcement</h2>
+  
+  <% if (error_msg && error_msg.length > 0) { %>
+    <div class="bg-red-600 text-white p-3 rounded mb-4"><%= error_msg %></div>
+  <% } %>
+  <% if (success_msg && success_msg.length > 0) { %>
+    <div class="bg-green-600 text-white p-3 rounded mb-4"><%= success_msg %></div>
+  <% } %>
+
+  <form action="/admin/announcements/edit/<%= announcement._id %>" method="POST">
+    <div class="mb-4">
+      <label class="block text-gray-300 mb-2">Title</label>
+      <input type="text" name="title" value="<%= announcement.title %>" class="w-full p-3 rounded bg-gray-700 text-white border border-gray-600" required>
+    </div>
+    
+    <div class="mb-4">
+      <label class="block text-gray-300 mb-2">Content</label>
+      <textarea name="content" rows="6" class="w-full p-3 rounded bg-gray-700 text-white border border-gray-600" required><%= announcement.content %></textarea>
+    </div>
+    
+    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded">Update Announcement</button>
+    <a href="/admin/announcements" class="ml-4 text-gray-400 hover:text-white">Cancel</a>
+  </form>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,55 @@
+<%- include('../partials/header') %>
+
+<div class="max-w-2xl mx-auto bg-gray-800 p-8 rounded-lg mt-10">
+  <h2 class="text-2xl font-bold mb-6">Edit Team Member</h2>
+  
+  <% if (error_msg && error_msg.length > 0) { %>
+    <div class="bg-red-600 text-white p-3 rounded mb-4"><%= error_msg %></div>
+  <% } %>
+  <% if (success_msg && success_msg.length > 0) { %>
+    <div class="bg-green-600 text-white p-3 rounded mb-4"><%= success_msg %></div>
+  <% } %>
+
+  <form action="/admin/team/edit/<%= member._id %>" method="POST" enctype="multipart/form-data">
+    <div class="mb-4">
+      <label class="block text-gray-300 mb-2">Full Name</label>
+      <input type="text" name="name" value="<%= member.name %>" class="w-full p-3 rounded bg-gray-700 text-white border border-gray-600" required>
+    </div>
+    
+    <div class="mb-4">
+      <label class="block text-gray-300 mb-2">Role (e.g., President, Technical Lead)</label>
+      <input type="text" name="role" value="<%= member.role %>" class="w-full p-3 rounded bg-gray-700 text-white border border-gray-600" required>
+    </div>
+    
+    <div class="mb-4">
+      <label class="block text-gray-300 mb-2">LinkedIn URL (optional)</label>
+      <input type="url" name="linkedin" value="<%= member.linkedin || '' %>" class="w-full p-3 rounded bg-gray-700 text-white border border-gray-600" placeholder="https://linkedin.com/in/...">
+    </div>
+    
+    <div class="mb-4">
+      <label class="block text-gray-300 mb-2">GitHub URL (optional)</label>
+      <input type="url" name="github" value="<%= member.github || '' %>" class="w-full p-3 rounded bg-gray-700 text-white border border-gray-600" placeholder="https://github.com/...">
+    </div>
+    
+    <div class="mb-4">
+      <label class="block text-gray-300 mb-2">Display Order (lower numbers appear first)</label>
+      <input type="number" name="order" value="<%= member.order %>" class="w-full p-3 rounded bg-gray-700 text-white border border-gray-600">
+    </div>
+    
+    <div class="mb-4">
+      <label class="block text-gray-300 mb-2">Current Photo</label>
+      <% if (member.photo) { %>
+        <img src="<%= member.photo %>" alt="<%= member.name %>" class="w-32 h-32 object-cover rounded mb-2">
+      <% } else { %>
+        <p class="text-gray-400">No photo</p>
+      <% } %>
+      <label class="block text-gray-300 mb-2 mt-2">Replace Photo (optional)</label>
+      <input type="file" name="photo" accept="image/*" class="w-full p-3 rounded bg-gray-700 text-white border border-gray-600">
+    </div>
+    
+    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded">Update Member</button>
+    <a href="/admin/team" class="ml-4 text-gray-400 hover:text-white">Cancel</a>
+  </form>
+</div>
+
+<%- include('../partials/footer') %>

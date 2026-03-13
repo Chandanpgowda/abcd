@@ -1,0 +1,37 @@
+<%- include('../partials/header') %>
+
+<div class="container mx-auto p-6">
+  <h1 class="text-3xl font-bold mb-6">Contact Messages</h1>
+
+  <% if (success_msg && success_msg.length > 0) { %>
+    <div class="bg-green-600 text-white p-3 rounded mb-4"><%= success_msg %></div>
+  <% } %>
+  <% if (error_msg && error_msg.length > 0) { %>
+    <div class="bg-red-600 text-white p-3 rounded mb-4"><%= error_msg %></div>
+  <% } %>
+
+  <div class="space-y-4">
+    <% if (messages && messages.length > 0) { %>
+      <% messages.forEach(msg => { %>
+        <div class="bg-gray-800 p-5 rounded-lg">
+          <div class="flex justify-between items-start">
+            <div>
+              <h3 class="text-xl font-bold"><%= msg.name %></h3>
+              <p class="text-blue-400"><%= msg.email %></p>
+              <p class="text-gray-300 mt-2"><span class="font-semibold">Subject:</span> <%= msg.subject %></p>
+              <p class="text-gray-300 mt-1"><%= msg.message %></p>
+              <p class="text-sm text-gray-500 mt-2"><%= new Date(msg.createdAt).toLocaleString() %></p>
+            </div>
+            <form action="/admin/messages/delete/<%= msg._id %>" method="POST">
+              <button type="submit" class="text-red-500 hover:text-red-700" onclick="return confirm('Delete this message?')">Delete</button>
+            </form>
+          </div>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <p class="text-gray-400">No messages yet.</p>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

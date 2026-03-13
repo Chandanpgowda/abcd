@@ -1,0 +1,53 @@
+<%- include('../partials/header') %>
+
+<div class="container mx-auto p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">Team Management</h1>
+    <a href="/admin/team/new" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded">+ Add Member</a>
+  </div>
+
+  <% if (success_msg && success_msg.length > 0) { %>
+    <div class="bg-green-600 text-white p-3 rounded mb-4"><%= success_msg %></div>
+  <% } %>
+  <% if (error_msg && error_msg.length > 0) { %>
+    <div class="bg-red-600 text-white p-3 rounded mb-4"><%= error_msg %></div>
+  <% } %>
+
+  <div class="overflow-x-auto">
+    <table class="w-full bg-gray-800 rounded-lg">
+      <thead>
+        <tr class="border-b border-gray-700">
+          <th class="p-3 text-left">Photo</th>
+          <th class="p-3 text-left">Name</th>
+          <th class="p-3 text-left">Role</th>
+          <th class="p-3 text-left">Order</th>
+          <th class="p-3 text-left">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% members.forEach(member => { %>
+          <tr class="border-b border-gray-700 hover:bg-gray-700">
+            <td class="p-3">
+              <% if (member.photo) { %>
+                <img src="<%= member.photo %>" alt="<%= member.name %>" class="w-10 h-10 rounded-full object-cover">
+              <% } else { %>
+                <div class="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-xs">No img</div>
+              <% } %>
+            </td>
+            <td class="p-3"><%= member.name %></td>
+            <td class="p-3"><%= member.role %></td>
+            <td class="p-3"><%= member.order %></td>
+            <td class="p-3">
+              <a href="/admin/team/edit/<%= member._id %>" class="text-blue-400 hover:text-blue-300 mr-3">Edit</a>
+              <form action="/admin/team/delete/<%= member._id %>" method="POST" class="inline">
+                <button type="submit" class="text-red-500 hover:text-red-700" onclick="return confirm('Delete this member?')">Delete</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

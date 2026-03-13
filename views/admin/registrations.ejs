@@ -1,0 +1,54 @@
+<%- include('../partials/header') %>
+
+<div class="container mx-auto p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">Event Registrations</h1>
+    <a href="/admin/registrations/export" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded">Export CSV</a>
+  </div>
+
+  <% if (success_msg && success_msg.length > 0) { %>
+    <div class="bg-green-600 text-white p-3 rounded mb-4"><%= success_msg %></div>
+  <% } %>
+  <% if (error_msg && error_msg.length > 0) { %>
+    <div class="bg-red-600 text-white p-3 rounded mb-4"><%= error_msg %></div>
+  <% } %>
+
+  <div class="overflow-x-auto">
+    <table class="w-full bg-gray-800 rounded-lg">
+      <thead>
+        <tr class="border-b border-gray-700">
+          <th class="p-3 text-left">Event</th>
+          <th class="p-3 text-left">Name</th>
+          <th class="p-3 text-left">Email</th>
+          <th class="p-3 text-left">Phone</th>
+          <th class="p-3 text-left">Registered On</th>
+          <th class="p-3 text-left">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (registrations && registrations.length > 0) { %>
+          <% registrations.forEach(reg => { %>
+            <tr class="border-b border-gray-700 hover:bg-gray-700">
+              <td class="p-3"><%= reg.eventId ? reg.eventId.title : 'Deleted Event' %></td>
+              <td class="p-3"><%= reg.name %></td>
+              <td class="p-3"><%= reg.email %></td>
+              <td class="p-3"><%= reg.phone %></td>
+              <td class="p-3"><%= new Date(reg.registeredAt).toLocaleString() %></td>
+              <td class="p-3">
+                <form action="/admin/registrations/delete/<%= reg._id %>" method="POST">
+                  <button type="submit" class="text-red-500 hover:text-red-700" onclick="return confirm('Delete this registration?')">Delete</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        <% } else { %>
+          <tr>
+            <td colspan="6" class="p-3 text-center text-gray-400">No registrations yet.</td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
