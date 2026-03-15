@@ -8,7 +8,7 @@
       <% members.forEach((member, index) => { %>
         <div class="bg-gray-800 rounded-lg overflow-hidden text-center p-6 hover:shadow-2xl transition transform hover:scale-105 hover-grow fade-in-on-scroll delay-<%= index+1 %>">
           <% if (member.photo) { %>
-            <img src="<%= member.photo %>" alt="<%= member.name %>" class="w-32 h-32 rounded-full mx-auto object-cover mb-4">
+            <img src="<%= member.photo %>" alt="<%= member.name %>" loading="lazy" class="w-32 h-32 rounded-full mx-auto object-cover mb-4">
           <% } else { %>
             <div class="w-32 h-32 rounded-full bg-gray-600 mx-auto mb-4 flex items-center justify-center text-4xl">👤</div>
           <% } %>

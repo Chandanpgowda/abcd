@@ -1,9 +1,9 @@
 <%- include('../partials/header') %>
 
-<!-- Hero Section with Animation (already has own animations) -->
+<!-- Hero Section -->
 <section class="relative overflow-hidden bg-gradient-to-br from-deep-blue via-blue-900 to-gray-900 text-white py-20">
   <div class="absolute inset-0 opacity-10">
-    <svg class="w-full h-full" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+    <svg class="w-full h-full" viewBox="0 0 800 800">
       <circle cx="400" cy="400" r="350" fill="none" stroke="white" stroke-width="2" stroke-dasharray="10 10" />
     </svg>
   </div>
@@ -15,39 +15,31 @@
       Join TechSpark – the heartbeat of tech at Navkis College of Engineering. Code, build, compete, and innovate.
     </p>
     <div class="flex flex-wrap justify-center gap-4 animate-fade-in">
-      <a href="/events" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition transform hover:scale-105 shadow-lg">
-        Upcoming Events
-      </a>
-      <a href="/contact" class="border-2 border-blue-400 hover:bg-blue-400 hover:text-white text-blue-400 font-bold py-3 px-8 rounded-lg transition transform hover:scale-105 shadow-lg">
-        Join Us
-      </a>
-      <a href="/login" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-8 rounded-lg transition transform hover:scale-105 shadow-lg">
-        Admin Login
-      </a>
+      <a href="/events" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition transform hover:scale-105 shadow-lg">Upcoming Events</a>
+      <a href="/contact" class="border-2 border-blue-400 hover:bg-blue-400 hover:text-white text-blue-400 font-bold py-3 px-8 rounded-lg transition transform hover:scale-105 shadow-lg">Join Us</a>
+      <a href="/login" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-8 rounded-lg transition transform hover:scale-105 shadow-lg">Admin Login</a>
     </div>
   </div>
 </section>
 
-<!-- Latest Events Section with Countdown (scroll-triggered) -->
-<section class="container mx-auto p-8 fade-in-on-scroll">
+<!-- Latest Events -->
+<section class="container mx-auto p-8">
   <h2 class="text-3xl font-bold mb-8 text-center">🔥 Latest Upcoming Events</h2>
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
     <% if (latestEvents && latestEvents.length > 0) { %>
       <% latestEvents.forEach((event, index) => { %>
-        <div class="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition transform hover:scale-105 hover-grow fade-in-on-scroll delay-<%= index+1 %>">
+        <div class="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition transform hover:scale-105 hover-grow">
           <% if (event.image) { %>
-            <img src="<%= event.image %>" alt="<%= event.title %>" class="w-full h-48 object-cover">
+            <img src="<%= event.image %>" alt="<%= event.title %>" loading="lazy" class="w-full h-48 object-cover">
           <% } else { %>
             <div class="w-full h-48 bg-gray-700 flex items-center justify-center text-4xl">📅</div>
           <% } %>
           <div class="p-6">
             <h3 class="text-2xl font-bold mb-2"><%= event.title %></h3>
-            <p class="text-gray-400 mb-4"><%= event.description.substring(0, 100) %>...</p>
+            <p class="text-gray-400 mb-4"><%= event.description ? event.description.substring(0,100) : '' %>...</p>
             <div class="flex justify-between items-center">
               <span class="text-blue-300"><%= new Date(event.date).toLocaleDateString() %></span>
-              <div class="countdown-timer text-sm font-mono bg-blue-600 px-3 py-1 rounded" data-date="<%= event.date.toISOString() %>">
-                Loading...
-              </div>
+              <div class="countdown-timer text-sm font-mono bg-blue-600 px-3 py-1 rounded" data-date="<%= event.date.toISOString() %>">Loading...</div>
             </div>
             <% if (event.googleFormUrl) { %>
               <a href="<%= event.googleFormUrl %>" target="_blank" class="mt-4 inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition">Register</a>
@@ -64,22 +56,22 @@
   </div>
 </section>
 
-<!-- Why Join TechSpark (scroll-triggered) -->
-<section class="bg-gray-800 py-16 fade-in-on-scroll">
+<!-- Why Join TechSpark -->
+<section class="bg-gray-800 py-16">
   <div class="container mx-auto px-4">
     <h2 class="text-3xl font-bold mb-12 text-center">Why Join TechSpark?</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <div class="text-center p-6 fade-in-on-scroll delay-1">
+      <div class="text-center p-6">
         <div class="text-6xl mb-4">💡</div>
         <h3 class="text-2xl font-semibold mb-2">Innovate</h3>
         <p class="text-gray-400">Work on cutting-edge projects and turn your ideas into reality.</p>
       </div>
-      <div class="text-center p-6 fade-in-on-scroll delay-2">
+      <div class="text-center p-6">
         <div class="text-6xl mb-4">🤝</div>
         <h3 class="text-2xl font-semibold mb-2">Collaborate</h3>
         <p class="text-gray-400">Join a community of passionate learners and industry mentors.</p>
       </div>
-      <div class="text-center p-6 fade-in-on-scroll delay-3">
+      <div class="text-center p-6">
         <div class="text-6xl mb-4">🏆</div>
         <h3 class="text-2xl font-semibold mb-2">Compete</h3>
         <p class="text-gray-400">Participate in hackathons, coding contests, and gaming tournaments.</p>
@@ -88,8 +80,8 @@
   </div>
 </section>
 
-<!-- Quick Activities Overview (scroll-triggered) -->
-<section class="container mx-auto p-8 fade-in-on-scroll">
+<!-- Quick Activities -->
+<section class="container mx-auto p-8">
   <h2 class="text-3xl font-bold mb-8 text-center">What We Do</h2>
   <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
     <div class="bg-gray-700 p-4 rounded-lg hover-grow">💻 Coding</div>
@@ -99,36 +91,30 @@
   </div>
 </section>
 
-<!-- Call to Action (scroll-triggered) -->
-<section class="container mx-auto p-8 text-center fade-in-on-scroll">
+<!-- Call to Action -->
+<section class="container mx-auto p-8 text-center">
   <h2 class="text-3xl font-bold mb-4">Ready to Spark Your Passion?</h2>
-  <a href="/contact" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-10 rounded-lg text-xl transition transform hover:scale-105 inline-block">
-    Get Involved
-  </a>
+  <a href="/contact" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-10 rounded-lg text-xl transition transform hover:scale-105 inline-block">Get Involved</a>
 </section>
 
-<!-- Countdown Timer Script (unchanged) -->
+<!-- Countdown Timer Script -->
 <script>
   function updateCountdowns() {
     document.querySelectorAll('.countdown-timer').forEach(el => {
       const eventDate = new Date(el.dataset.date).getTime();
       const now = new Date().getTime();
       const diff = eventDate - now;
-
       if (diff < 0) {
         el.innerText = 'Event started!';
         return;
       }
-
       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
       const hours = Math.floor((diff % (86400000)) / (3600000));
       const minutes = Math.floor((diff % 3600000) / 60000);
       const seconds = Math.floor((diff % 60000) / 1000);
-
       el.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
     });
   }
-
   updateCountdowns();
   setInterval(updateCountdowns, 1000);
 </script>
@@ -142,12 +128,8 @@
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  .animate-fade-in-down {
-    animation: fadeInDown 1s ease-out;
-  }
-  .animate-fade-in-up {
-    animation: fadeInUp 1s ease-out;
-  }
+  .animate-fade-in-down { animation: fadeInDown 1s ease-out; }
+  .animate-fade-in-up { animation: fadeInUp 1s ease-out; }
 </style>
 
 <%- include('../partials/footer') %>

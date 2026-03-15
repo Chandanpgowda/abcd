@@ -1,0 +1,25 @@
+<%- include('../partials/header') %>
+
+<div class="container mx-auto p-6 max-w-4xl">
+  <h1 class="text-4xl font-bold text-center py-10">Frequently Asked Questions</h1>
+
+  <% if (Object.keys(grouped).length === 0) { %>
+    <p class="text-gray-400 text-center">No FAQs yet.</p>
+  <% } else { %>
+    <% Object.keys(grouped).sort().forEach(category => { %>
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold mb-4 capitalize text-blue-400"><%= category %></h2>
+        <div class="space-y-4">
+          <% grouped[category].forEach(faq => { %>
+            <div class="bg-gray-800 rounded-lg p-6">
+              <h3 class="text-xl font-semibold mb-2"><%= faq.question %></h3>
+              <p class="text-gray-300"><%= faq.answer %></p>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    <% }) %>
+  <% } %>
+</div>
+
+<%- include('../partials/footer') %>

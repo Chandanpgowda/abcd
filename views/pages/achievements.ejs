@@ -1,0 +1,47 @@
+<%- include('../partials/header') %>
+
+<div class="container mx-auto p-6">
+  <h1 class="text-4xl font-bold text-center py-10">Our Achievements</h1>
+  
+  <% if (featuredAchievements && featuredAchievements.length > 0) { %>
+    <section class="mb-12">
+      <h2 class="text-3xl font-bold mb-6 text-center text-blue-400">Featured</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% featuredAchievements.forEach(ach => { %>
+          <div class="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition transform hover:scale-105 hover-grow">
+            <% if (ach.image) { %>
+              <img src="<%= ach.image %>" alt="<%= ach.title %>" class="w-full h-48 object-cover">
+            <% } %>
+            <div class="p-6">
+              <h3 class="text-2xl font-bold mb-2"><%= ach.title %></h3>
+              <p class="text-gray-400 mb-2"><%= ach.description %></p>
+              <p class="text-sm text-blue-300"><%= ach.date ? new Date(ach.date).toLocaleDateString() : '' %></p>
+              <span class="inline-block mt-2 bg-blue-600 text-xs px-2 py-1 rounded"><%= ach.category %></span>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </section>
+  <% } %>
+
+  <section>
+    <h2 class="text-3xl font-bold mb-6 text-center">All Achievements</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <% achievements.forEach(ach => { %>
+        <div class="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition transform hover:scale-105 hover-grow">
+          <% if (ach.image) { %>
+            <img src="<%= ach.image %>" alt="<%= ach.title %>" class="w-full h-48 object-cover">
+          <% } %>
+          <div class="p-6">
+            <h3 class="text-2xl font-bold mb-2"><%= ach.title %></h3>
+            <p class="text-gray-400 mb-2"><%= ach.description %></p>
+            <p class="text-sm text-blue-300"><%= ach.date ? new Date(ach.date).toLocaleDateString() : '' %></p>
+            <span class="inline-block mt-2 bg-blue-600 text-xs px-2 py-1 rounded"><%= ach.category %></span>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </section>
+</div>
+
+<%- include('../partials/footer') %>
