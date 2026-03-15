@@ -1,7 +1,10 @@
 <%- include('../partials/header') %>
 
 <div class="container mx-auto p-6">
-  <h1 class="text-3xl font-bold mb-6">Contact Messages</h1>
+  <div class="flex items-center space-x-4 mb-6">
+    <a href="/admin" class="text-blue-400 hover:text-blue-300 text-lg">&larr; Back to Dashboard</a>
+    <h1 class="text-3xl font-bold">Contact Messages</h1>
+  </div>
 
   <% if (success_msg && success_msg.length > 0) { %>
     <div class="bg-green-600 text-white p-3 rounded mb-4"><%= success_msg %></div>

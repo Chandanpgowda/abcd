@@ -1,0 +1,42 @@
+<%- include('../partials/header') %>
+
+<div class="max-w-2xl mx-auto bg-gray-800 p-8 rounded-lg mt-10">
+  <div class="flex items-center space-x-4 mb-6">
+    <a href="/admin/faqs" class="text-blue-400 hover:text-blue-300 text-lg">&larr; Back to FAQs</a>
+    <h2 class="text-2xl font-bold">Edit FAQ</h2>
+  </div>
+  
+  <% if (error_msg && error_msg.length > 0) { %>
+    <div class="bg-red-600 text-white p-3 rounded mb-4"><%= error_msg %></div>
+  <% } %>
+  <% if (success_msg && success_msg.length > 0) { %>
+    <div class="bg-green-600 text-white p-3 rounded mb-4"><%= success_msg %></div>
+  <% } %>
+
+  <form action="/admin/faqs/edit/<%= faq._id %>" method="POST">
+    <div class="mb-4">
+      <label class="block text-gray-300 mb-2">Question</label>
+      <input type="text" name="question" value="<%= faq.question %>" class="w-full p-3 rounded bg-gray-700 text-white border border-gray-600" required>
+    </div>
+    
+    <div class="mb-4">
+      <label class="block text-gray-300 mb-2">Answer</label>
+      <textarea name="answer" rows="5" class="w-full p-3 rounded bg-gray-700 text-white border border-gray-600" required><%= faq.answer %></textarea>
+    </div>
+    
+    <div class="mb-4">
+      <label class="block text-gray-300 mb-2">Category</label>
+      <input type="text" name="category" value="<%= faq.category %>" class="w-full p-3 rounded bg-gray-700 text-white border border-gray-600">
+    </div>
+    
+    <div class="mb-4">
+      <label class="block text-gray-300 mb-2">Display Order</label>
+      <input type="number" name="order" value="<%= faq.order %>" class="w-full p-3 rounded bg-gray-700 text-white border border-gray-600">
+    </div>
+    
+    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded">Update FAQ</button>
+    <a href="/admin/faqs" class="ml-4 text-gray-400 hover:text-white">Cancel</a>
+  </form>
+</div>
+
+<%- include('../partials/footer') %>

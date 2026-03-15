@@ -7,6 +7,8 @@ const {
   getGallery, 
   getTeam, 
   getAnnouncements, 
+  getAchievements,
+  getFaq, // ✅ Added
   getContact,
   postContact,
   getRegisterForm,
@@ -19,6 +21,8 @@ router.get('/events', getEvents);
 router.get('/gallery', getGallery);
 router.get('/team', getTeam);
 router.get('/announcements', getAnnouncements);
+router.get('/achievements', getAchievements);
+router.get('/faq', getFaq); // ✅ New route
 router.get('/contact', getContact);
 router.post('/contact', postContact);
 

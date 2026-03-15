@@ -4,6 +4,8 @@ const Team = require('../models/Team');
 const Announcement = require('../models/Announcement');
 const Message = require('../models/Message');
 const Registration = require('../models/Registration');
+const Achievement = require('../models/Achievement');
+const Faq = require('../models/Faq'); // ✅ Added for FAQ
 const multer = require('multer');
 const path = require('path');
 
@@ -24,6 +26,68 @@ exports.getDashboard = (req, res) => {
     success_msg: req.flash('success'),
     error_msg: req.flash('error')
   });
+};
+
+// ========== DASHBOARD STATS ==========
+exports.getDashboardStats = async (req, res) => {
+  try {
+    const [
+      eventCount,
+      upcomingCount,
+      pastCount,
+      registrationCount,
+      messageCount,
+      galleryCount,
+      teamCount,
+      announcementCount,
+      achievementCount,
+      faqCount // ✅ Added FAQ count
+    ] = await Promise.all([
+      Event.countDocuments(),
+      Event.countDocuments({ type: 'upcoming' }),
+      Event.countDocuments({ type: 'past' }),
+      Registration.countDocuments(),
+      Message.countDocuments(),
+      Gallery.countDocuments(),
+      Team.countDocuments(),
+      Announcement.countDocuments(),
+      Achievement.countDocuments(),
+      Faq.countDocuments() // ✅ Added
+    ]);
+
+    // Get last 7 days registrations for chart
+    const last7Days = [];
+    const registrationsPerDay = [];
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const start = new Date(date.setHours(0,0,0,0));
+      const end = new Date(date.setHours(23,59,59,999));
+      const count = await Registration.countDocuments({
+        registeredAt: { $gte: start, $lte: end }
+      });
+      last7Days.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
+      registrationsPerDay.push(count);
+    }
+
+    res.json({
+      eventCount,
+      upcomingCount,
+      pastCount,
+      registrationCount,
+      messageCount,
+      galleryCount,
+      teamCount,
+      announcementCount,
+      achievementCount,
+      faqCount, // ✅ Added
+      last7Days,
+      registrationsPerDay
+    });
+  } catch (err) {
+    console.error('Stats error:', err);
+    res.status(500).json({ error: 'Could not fetch stats' });
+  }
 };
 
 // ========== EVENT MANAGEMENT ==========
@@ -563,4 +627,221 @@ exports.exportRegistrations = async (req, res) => {
     req.flash('error', 'Could not export registrations');
     res.redirect('/admin/registrations');
   }
+};
+
+// ========== ACHIEVEMENT MANAGEMENT ==========
+
+// List all achievements
+exports.getAchievements = async (req, res) => {
+  try {
+    const achievements = await Achievement.find().sort({ order: 1, date: -1 });
+    res.render('admin/achievements', {
+      achievements,
+      success_msg: req.flash('success'),
+      error_msg: req.flash('error')
+    });
+  } catch (err) {
+    console.error(err);
+    req.flash('error', 'Could not fetch achievements');
+    res.redirect('/admin');
+  }
+};
+
+// Show add achievement form
+exports.addAchievement = (req, res) => {
+  res.render('admin/add-achievement', {
+    success_msg: req.flash('success'),
+    error_msg: req.flash('error')
+  });
+};
+
+// Handle achievement creation
+exports.postAchievement = [
+  upload.single('image'),
+  async (req, res) => {
+    try {
+      const { title, description, date, category, featured, order } = req.body;
+      const image = req.file ? '/uploads/' + req.file.filename : '';
+      
+      await Achievement.create({
+        title,
+        description,
+        date: date || undefined,
+        image,
+        category,
+        featured: featured === 'on',
+        order: order || 0
+      });
+      
+      req.flash('success', 'Achievement added');
+      res.redirect('/admin/achievements');
+    } catch (err) {
+      console.error(err);
+      req.flash('error', 'Failed to add achievement');
+      res.redirect('/admin/achievements/new');
+    }
+  }
+];
+
+// Show edit achievement form
+exports.editAchievement = async (req, res) => {
+  try {
+    const achievement = await Achievement.findById(req.params.id);
+    if (!achievement) {
+      req.flash('error', 'Achievement not found');
+      return res.redirect('/admin/achievements');
+    }
+    res.render('admin/edit-achievement', {
+      achievement,
+      success_msg: req.flash('success'),
+      error_msg: req.flash('error')
+    });
+  } catch (err) {
+    console.error(err);
+    req.flash('error', 'Could not load achievement');
+    res.redirect('/admin/achievements');
+  }
+};
+
+// Handle achievement update
+exports.updateAchievement = [
+  upload.single('image'),
+  async (req, res) => {
+    try {
+      const { title, description, date, category, featured, order } = req.body;
+      const achievement = await Achievement.findById(req.params.id);
+      if (!achievement) {
+        req.flash('error', 'Achievement not found');
+        return res.redirect('/admin/achievements');
+      }
+
+      achievement.title = title;
+      achievement.description = description;
+      achievement.date = date || achievement.date;
+      achievement.category = category;
+      achievement.featured = featured === 'on';
+      achievement.order = order || 0;
+
+      if (req.file) {
+        achievement.image = '/uploads/' + req.file.filename;
+      }
+
+      await achievement.save();
+      req.flash('success', 'Achievement updated');
+      res.redirect('/admin/achievements');
+    } catch (err) {
+      console.error(err);
+      req.flash('error', 'Failed to update achievement');
+      res.redirect('/admin/achievements/edit/' + req.params.id);
+    }
+  }
+];
+
+// Delete achievement
+exports.deleteAchievement = async (req, res) => {
+  try {
+    await Achievement.findByIdAndDelete(req.params.id);
+    req.flash('success', 'Achievement deleted');
+  } catch (err) {
+    console.error(err);
+    req.flash('error', 'Delete failed');
+  }
+  res.redirect('/admin/achievements');
+};
+
+// ========== FAQ MANAGEMENT ========== (NEW)
+
+// List all FAQs
+exports.getFaqs = async (req, res) => {
+  try {
+    const faqs = await Faq.find().sort({ order: 1, createdAt: -1 });
+    res.render('admin/faqs', {
+      faqs,
+      success_msg: req.flash('success'),
+      error_msg: req.flash('error')
+    });
+  } catch (err) {
+    console.error(err);
+    req.flash('error', 'Could not fetch FAQs');
+    res.redirect('/admin');
+  }
+};
+
+// Show add FAQ form
+exports.addFaq = (req, res) => {
+  res.render('admin/add-faq', {
+    success_msg: req.flash('success'),
+    error_msg: req.flash('error')
+  });
+};
+
+// Handle FAQ creation
+exports.postFaq = async (req, res) => {
+  try {
+    const { question, answer, category, order } = req.body;
+    await Faq.create({ question, answer, category, order: order || 0 });
+    req.flash('success', 'FAQ added');
+    res.redirect('/admin/faqs');
+  } catch (err) {
+    console.error(err);
+    req.flash('error', 'Failed to add FAQ');
+    res.redirect('/admin/faqs/new');
+  }
+};
+
+// Show edit FAQ form
+exports.editFaq = async (req, res) => {
+  try {
+    const faq = await Faq.findById(req.params.id);
+    if (!faq) {
+      req.flash('error', 'FAQ not found');
+      return res.redirect('/admin/faqs');
+    }
+    res.render('admin/edit-faq', {
+      faq,
+      success_msg: req.flash('success'),
+      error_msg: req.flash('error')
+    });
+  } catch (err) {
+    console.error(err);
+    req.flash('error', 'Could not load FAQ');
+    res.redirect('/admin/faqs');
+  }
+};
+
+// Handle FAQ update
+exports.updateFaq = async (req, res) => {
+  try {
+    const { question, answer, category, order } = req.body;
+    const faq = await Faq.findById(req.params.id);
+    if (!faq) {
+      req.flash('error', 'FAQ not found');
+      return res.redirect('/admin/faqs');
+    }
+
+    faq.question = question;
+    faq.answer = answer;
+    faq.category = category;
+    faq.order = order || 0;
+
+    await faq.save();
+    req.flash('success', 'FAQ updated');
+    res.redirect('/admin/faqs');
+  } catch (err) {
+    console.error(err);
+    req.flash('error', 'Failed to update FAQ');
+    res.redirect('/admin/faqs/edit/' + req.params.id);
+  }
+};
+
+// Delete FAQ
+exports.deleteFaq = async (req, res) => {
+  try {
+    await Faq.findByIdAndDelete(req.params.id);
+    req.flash('success', 'FAQ deleted');
+  } catch (err) {
+    console.error(err);
+    req.flash('error', 'Delete failed');
+  }
+  res.redirect('/admin/faqs');
 };

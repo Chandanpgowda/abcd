@@ -1,4 +1,3 @@
-// middleware/auth.js
 module.exports = {
   isAdmin: (req, res, next) => {
     if (req.session.user && req.session.user.role === 'admin') {

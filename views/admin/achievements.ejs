@@ -1,0 +1,52 @@
+<%- include('../partials/header') %>
+
+<div class="container mx-auto p-6">
+  <div class="flex justify-between items-center mb-6">
+    <div class="flex items-center space-x-4">
+      <a href="/admin" class="text-blue-400 hover:text-blue-300 text-lg">&larr; Back to Dashboard</a>
+      <h1 class="text-3xl font-bold">Achievements</h1>
+    </div>
+    <a href="/admin/achievements/new" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded">+ Add New</a>
+  </div>
+
+  <% if (success_msg && success_msg.length > 0) { %>
+    <div class="bg-green-600 text-white p-3 rounded mb-4"><%= success_msg %></div>
+  <% } %>
+  <% if (error_msg && error_msg.length > 0) { %>
+    <div class="bg-red-600 text-white p-3 rounded mb-4"><%= error_msg %></div>
+  <% } %>
+
+  <div class="overflow-x-auto">
+    <table class="w-full bg-gray-800 rounded-lg">
+      <thead>
+        <tr class="border-b border-gray-700">
+          <th class="p-3 text-left">Title</th>
+          <th class="p-3 text-left">Category</th>
+          <th class="p-3 text-left">Date</th>
+          <th class="p-3 text-left">Featured</th>
+          <th class="p-3 text-left">Order</th>
+          <th class="p-3 text-left">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% achievements.forEach(ach => { %>
+          <tr class="border-b border-gray-700 hover:bg-gray-700">
+            <td class="p-3"><%= ach.title %></td>
+            <td class="p-3"><%= ach.category %></td>
+            <td class="p-3"><%= ach.date ? new Date(ach.date).toLocaleDateString() : '' %></td>
+            <td class="p-3"><%= ach.featured ? '✅' : '❌' %></td>
+            <td class="p-3"><%= ach.order %></td>
+            <td class="p-3">
+              <a href="/admin/achievements/edit/<%= ach._id %>" class="text-blue-400 hover:text-blue-300 mr-3">Edit</a>
+              <form action="/admin/achievements/delete/<%= ach._id %>" method="POST" class="inline">
+                <button type="submit" class="text-red-500 hover:text-red-700" onclick="return confirm('Delete this achievement?')">Delete</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

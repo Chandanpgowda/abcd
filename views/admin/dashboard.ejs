@@ -11,6 +11,51 @@
     <div class="bg-red-600 text-white p-3 rounded mb-4"><%= error_msg %></div>
   <% } %>
 
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg text-center">
+      <div class="text-4xl font-bold text-blue-400" id="stat-events">-</div>
+      <div class="text-gray-400">Total Events</div>
+      <div class="text-sm mt-2"><span id="stat-upcoming">-</span> upcoming · <span id="stat-past">-</span> past</div>
+    </div>
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg text-center">
+      <div class="text-4xl font-bold text-green-400" id="stat-registrations">-</div>
+      <div class="text-gray-400">Registrations</div>
+    </div>
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg text-center">
+      <div class="text-4xl font-bold text-yellow-400" id="stat-messages">-</div>
+      <div class="text-gray-400">Messages</div>
+    </div>
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg text-center">
+      <div class="text-4xl font-bold text-purple-400" id="stat-gallery">-</div>
+      <div class="text-gray-400">Gallery Images</div>
+    </div>
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg text-center">
+      <div class="text-4xl font-bold text-pink-400" id="stat-team">-</div>
+      <div class="text-gray-400">Team Members</div>
+    </div>
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg text-center">
+      <div class="text-4xl font-bold text-indigo-400" id="stat-announcements">-</div>
+      <div class="text-gray-400">Announcements</div>
+    </div>
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg text-center">
+      <div class="text-4xl font-bold text-orange-400" id="stat-achievements">-</div>
+      <div class="text-gray-400">Achievements</div>
+    </div>
+    <!-- New FAQ stat -->
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg text-center">
+      <div class="text-4xl font-bold text-teal-400" id="stat-faqs">-</div>
+      <div class="text-gray-400">FAQs</div>
+    </div>
+  </div>
+
+  <!-- Chart Section -->
+  <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-8" style="height: 250px;">
+    <h2 class="text-2xl font-bold mb-4">Registrations (Last 7 Days)</h2>
+    <canvas id="registrationsChart"></canvas>
+  </div>
+
+  <!-- Management Cards -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
     <!-- Events Card -->
     <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
@@ -53,7 +98,75 @@
       <p class="text-gray-300 mb-4">View event sign-ups</p>
       <a href="/admin/registrations" class="bg-blue-600 px-4 py-2 rounded inline-block hover:bg-blue-700">View Registrations</a>
     </div>
+
+    <!-- Achievements Card -->
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+      <h2 class="text-2xl font-semibold mb-4">Achievements</h2>
+      <p class="text-gray-300 mb-4">Manage club achievements and testimonials</p>
+      <a href="/admin/achievements" class="bg-blue-600 px-4 py-2 rounded inline-block hover:bg-blue-700">Manage Achievements</a>
+    </div>
+
+    <!-- FAQ Card (NEW) -->
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+      <h2 class="text-2xl font-semibold mb-4">FAQs</h2>
+      <p class="text-gray-300 mb-4">Manage frequently asked questions</p>
+      <a href="/admin/faqs" class="bg-blue-600 px-4 py-2 rounded inline-block hover:bg-blue-700">Manage FAQs</a>
+    </div>
   </div>
 </div>
+
+<!-- Load Chart.js and fetch stats -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  async function loadStats() {
+    try {
+      const res = await fetch('/admin/stats');
+      const stats = await res.json();
+
+      document.getElementById('stat-events').textContent = stats.eventCount;
+      document.getElementById('stat-upcoming').textContent = stats.upcomingCount;
+      document.getElementById('stat-past').textContent = stats.pastCount;
+      document.getElementById('stat-registrations').textContent = stats.registrationCount;
+      document.getElementById('stat-messages').textContent = stats.messageCount;
+      document.getElementById('stat-gallery').textContent = stats.galleryCount;
+      document.getElementById('stat-team').textContent = stats.teamCount;
+      document.getElementById('stat-announcements').textContent = stats.announcementCount;
+      document.getElementById('stat-achievements').textContent = stats.achievementCount;
+      document.getElementById('stat-faqs').textContent = stats.faqCount; // ✅ Added
+
+      const ctx = document.getElementById('registrationsChart').getContext('2d');
+      
+      if (window.registrationChart) {
+        window.registrationChart.destroy();
+      }
+
+      window.registrationChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: stats.last7Days,
+          datasets: [{
+            label: 'Registrations',
+            data: stats.registrationsPerDay,
+            borderColor: 'rgb(59, 130, 246)',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            tension: 0.1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { beginAtZero: true, grid: { color: '#374151' } },
+            x: { grid: { display: false } }
+          },
+          plugins: { legend: { display: false } }
+        }
+      });
+    } catch (err) {
+      console.error('Failed to load stats:', err);
+    }
+  }
+  loadStats();
+</script>
 
 <%- include('../partials/footer') %>

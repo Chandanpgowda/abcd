@@ -3,6 +3,150 @@
     <p>&copy; 2025 TechSpark. All rights reserved.</p>
   </footer>
   <script src="/js/darkmode.js"></script>
-  <script src="/js/animations.js"></script>
+  <script src="/js/cursor-effect.js"></script>
+  <script src="/js/spark-background.js"></script>
+
+  <!-- Chat Widget HTML (Improved Styling) -->
+  <div id="chat-button" class="fixed bottom-5 right-5 bg-gradient-to-r from-blue-600 to-blue-800 text-white p-4 rounded-full shadow-xl cursor-pointer hover:from-blue-700 hover:to-blue-900 transition-all duration-300 transform hover:scale-110 z-50">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+    </svg>
+  </div>
+
+  <div id="chat-container" class="fixed bottom-20 right-5 w-80 h-96 bg-gray-900 rounded-xl shadow-2xl flex flex-col overflow-hidden hidden z-50 border border-gray-700 backdrop-blur-sm">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-4 flex justify-between items-center">
+      <div class="flex items-center space-x-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+        <span class="font-bold">TechSpark Assistant</span>
+      </div>
+      <button id="close-chat" class="text-white hover:text-gray-300 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    <!-- Messages Area -->
+    <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-3 text-sm bg-gray-900">
+      <!-- Messages inserted by JS -->
+    </div>
+    <!-- Input Area -->
+    <div class="p-3 bg-gray-800 border-t border-gray-700 flex items-center space-x-2">
+      <input type="text" id="chat-input" placeholder="Type your message..." class="flex-1 bg-gray-700 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-600">
+      <button id="send-chat" class="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Chat Widget JavaScript with Persistent Memory (localStorage) -->
+  <script>
+    (function() {
+      const chatButton = document.getElementById('chat-button');
+      const chatContainer = document.getElementById('chat-container');
+      const closeChat = document.getElementById('close-chat');
+      const chatMessages = document.getElementById('chat-messages');
+      const chatInput = document.getElementById('chat-input');
+      const sendButton = document.getElementById('send-chat');
+
+      const STORAGE_KEY = 'techspark-chat-history';
+
+      // Load history from localStorage or start fresh
+      let conversationHistory = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+
+      function displayMessage(role, content) {
+        const div = document.createElement('div');
+        div.className = role === 'user' 
+          ? 'bg-blue-600 text-white p-3 rounded-2xl self-end max-w-[80%] ml-auto mb-2 shadow-md'
+          : 'bg-gray-700 text-white p-3 rounded-2xl self-start max-w-[80%] mb-2 shadow-md';
+        div.textContent = content;
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      function saveHistory() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(conversationHistory));
+      }
+
+      function displayAllMessages() {
+        chatMessages.innerHTML = ''; // Clear any placeholder
+        conversationHistory.forEach(msg => {
+          // Don't display system messages (they are not part of the visible chat)
+          if (msg.role !== 'system') {
+            displayMessage(msg.role, msg.content);
+          }
+        });
+      }
+
+      // If no history, add initial greeting
+      if (conversationHistory.length === 0) {
+        const greeting = "Hello! I'm your TechSpark assistant. Ask me anything about the club, events, or tech!";
+        conversationHistory.push({ role: 'assistant', content: greeting });
+        saveHistory();
+      }
+
+      // Open chat
+      chatButton.addEventListener('click', () => {
+        chatContainer.classList.remove('hidden');
+        chatButton.classList.add('hidden');
+        displayAllMessages(); // Show messages when opened
+      });
+
+      // Close chat
+      closeChat.addEventListener('click', () => {
+        chatContainer.classList.add('hidden');
+        chatButton.classList.remove('hidden');
+      });
+
+      async function sendMessage() {
+        const message = chatInput.value.trim();
+        if (!message) return;
+
+        conversationHistory.push({ role: 'user', content: message });
+        saveHistory();
+        displayMessage('user', message);
+        chatInput.value = '';
+
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'bg-gray-700 text-white p-3 rounded-2xl self-start max-w-[80%] mb-2';
+        typingDiv.textContent = '...';
+        typingDiv.id = 'typing-indicator';
+        chatMessages.appendChild(typingDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        try {
+          const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ messages: conversationHistory })
+          });
+          const data = await response.json();
+
+          document.getElementById('typing-indicator')?.remove();
+
+          if (data.reply) {
+            conversationHistory.push({ role: 'assistant', content: data.reply });
+            saveHistory();
+            displayMessage('assistant', data.reply);
+          } else if (data.error) {
+            displayMessage('assistant', data.error);
+          }
+        } catch (error) {
+          document.getElementById('typing-indicator')?.remove();
+          displayMessage('assistant', 'Error connecting to server.');
+          console.error(error);
+        }
+      }
+
+      sendButton.addEventListener('click', sendMessage);
+      chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+      });
+    })();
+  </script>
 </body>
 </html>

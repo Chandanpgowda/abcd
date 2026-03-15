@@ -1,7 +1,10 @@
 <%- include('../partials/header') %>
 
 <div class="max-w-2xl mx-auto bg-gray-800 p-8 rounded-lg mt-10">
-  <h2 class="text-2xl font-bold mb-6">Add Announcement</h2>
+  <div class="flex items-center space-x-4 mb-6">
+    <a href="/admin/announcements" class="text-blue-400 hover:text-blue-300 text-lg">&larr; Back to Announcements</a>
+    <h2 class="text-2xl font-bold">Add Announcement</h2>
+  </div>
   
   <% if (error_msg && error_msg.length > 0) { %>
     <div class="bg-red-600 text-white p-3 rounded mb-4"><%= error_msg %></div>

@@ -1,0 +1,69 @@
+<%- include('../partials/header') %>
+
+<div class="max-w-2xl mx-auto bg-gray-800 p-8 rounded-lg mt-10">
+  <div class="flex items-center space-x-4 mb-6">
+    <a href="/admin/achievements" class="text-blue-400 hover:text-blue-300 text-lg">&larr; Back to Achievements</a>
+    <h2 class="text-2xl font-bold">Edit Achievement</h2>
+  </div>
+  
+  <% if (error_msg && error_msg.length > 0) { %>
+    <div class="bg-red-600 text-white p-3 rounded mb-4"><%= error_msg %></div>
+  <% } %>
+  <% if (success_msg && success_msg.length > 0) { %>
+    <div class="bg-green-600 text-white p-3 rounded mb-4"><%= success_msg %></div>
+  <% } %>
+
+  <form action="/admin/achievements/edit/<%= achievement._id %>" method="POST" enctype="multipart/form-data">
+    <div class="mb-4">
+      <label class="block text-gray-300 mb-2">Title</label>
+      <input type="text" name="title" value="<%= achievement.title %>" class="w-full p-3 rounded bg-gray-700 text-white border border-gray-600" required>
+    </div>
+    
+    <div class="mb-4">
+      <label class="block text-gray-300 mb-2">Description</label>
+      <textarea name="description" rows="4" class="w-full p-3 rounded bg-gray-700 text-white border border-gray-600" required><%= achievement.description %></textarea>
+    </div>
+    
+    <div class="mb-4">
+      <label class="block text-gray-300 mb-2">Date</label>
+      <input type="date" name="date" value="<%= achievement.date ? new Date(achievement.date).toISOString().split('T')[0] : '' %>" class="w-full p-3 rounded bg-gray-700 text-white border border-gray-600">
+    </div>
+    
+    <div class="mb-4">
+      <label class="block text-gray-300 mb-2">Category</label>
+      <select name="category" class="w-full p-3 rounded bg-gray-700 text-white border border-gray-600">
+        <option value="award" <%= achievement.category === 'award' ? 'selected' : '' %>>Award</option>
+        <option value="competition" <%= achievement.category === 'competition' ? 'selected' : '' %>>Competition</option>
+        <option value="workshop" <%= achievement.category === 'workshop' ? 'selected' : '' %>>Workshop</option>
+        <option value="testimonial" <%= achievement.category === 'testimonial' ? 'selected' : '' %>>Testimonial</option>
+        <option value="other" <%= achievement.category === 'other' ? 'selected' : '' %>>Other</option>
+      </select>
+    </div>
+    
+    <div class="mb-4 flex items-center">
+      <input type="checkbox" name="featured" id="featured" class="mr-2" <%= achievement.featured ? 'checked' : '' %>>
+      <label for="featured" class="text-gray-300">Featured</label>
+    </div>
+    
+    <div class="mb-4">
+      <label class="block text-gray-300 mb-2">Display Order</label>
+      <input type="number" name="order" value="<%= achievement.order %>" class="w-full p-3 rounded bg-gray-700 text-white border border-gray-600">
+    </div>
+    
+    <div class="mb-4">
+      <label class="block text-gray-300 mb-2">Current Image</label>
+      <% if (achievement.image) { %>
+        <img src="<%= achievement.image %>" alt="<%= achievement.title %>" class="w-32 h-32 object-cover rounded mb-2">
+      <% } else { %>
+        <p class="text-gray-400">No image</p>
+      <% } %>
+      <label class="block text-gray-300 mb-2 mt-2">Replace Image (optional)</label>
+      <input type="file" name="image" accept="image/*" class="w-full p-3 rounded bg-gray-700 text-white border border-gray-600">
+    </div>
+    
+    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded">Update</button>
+    <a href="/admin/achievements" class="ml-4 text-gray-400 hover:text-white">Cancel</a>
+  </form>
+</div>
+
+<%- include('../partials/footer') %>

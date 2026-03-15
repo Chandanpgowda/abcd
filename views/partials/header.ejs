@@ -3,8 +3,47 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TechSpark</title>
+  
+  <!-- Dynamic Title -->
+  <title><%= typeof title !== 'undefined' ? title + ' | TechSpark' : 'TechSpark - Igniting Innovation & Technology' %></title>
+  
+  <!-- Meta Description -->
+  <meta name="description" content="<%= typeof metaDescription !== 'undefined' ? metaDescription : 'TechSpark is the official technical club of Navkis College of Engineering, Hassan. Join us for coding, robotics, gaming, and tech events.' %>">
+  
+  <!-- Meta Keywords (optional) -->
+  <meta name="keywords" content="<%= typeof metaKeywords !== 'undefined' ? metaKeywords : 'technical club, coding, robotics, gaming, tech events, engineering, Navkis College, Hassan' %>">
+  
+  <!-- Author -->
+  <meta name="author" content="TechSpark Club">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="<%= typeof currentUrl !== 'undefined' ? currentUrl : 'https://techspark-club.onrender.com' %>">
+  <meta property="og:title" content="<%= typeof ogTitle !== 'undefined' ? ogTitle : (typeof title !== 'undefined' ? title : 'TechSpark - Igniting Innovation & Technology') %>">
+  <meta property="og:description" content="<%= typeof ogDescription !== 'undefined' ? ogDescription : (typeof metaDescription !== 'undefined' ? metaDescription : 'TechSpark is the official technical club of Navkis College of Engineering, Hassan. Join us for coding, robotics, gaming, and tech events.') %>">
+  <meta property="og:image" content="<%= typeof ogImage !== 'undefined' ? ogImage : '/logo.png' %>">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="<%= typeof currentUrl !== 'undefined' ? currentUrl : 'https://techspark-club.onrender.com' %>">
+  <meta property="twitter:title" content="<%= typeof twitterTitle !== 'undefined' ? twitterTitle : (typeof ogTitle !== 'undefined' ? ogTitle : (typeof title !== 'undefined' ? title : 'TechSpark')) %>">
+  <meta property="twitter:description" content="<%= typeof twitterDescription !== 'undefined' ? twitterDescription : (typeof ogDescription !== 'undefined' ? ogDescription : (typeof metaDescription !== 'undefined' ? metaDescription : 'TechSpark - Igniting Innovation & Technology')) %>">
+  <meta property="twitter:image" content="<%= typeof twitterImage !== 'undefined' ? twitterImage : (typeof ogImage !== 'undefined' ? ogImage : '/logo.png') %>">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="<%= typeof canonicalUrl !== 'undefined' ? canonicalUrl : (typeof currentUrl !== 'undefined' ? currentUrl : 'https://techspark-club.onrender.com') %>">
+  
+  <!-- Noindex for admin/login pages -->
+  <% if (typeof noindex !== 'undefined' && noindex) { %>
+    <meta name="robots" content="noindex, nofollow">
+  <% } %>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
   <!-- custom dark/light theme styles -->
   <style>
     /* Base styles */
@@ -54,6 +93,13 @@
       box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
     }
 
+    /* Force text in dark sections to be white */
+    .bg-gray-800 p,
+    .bg-gray-800 h2,
+    .bg-gray-800 h3 {
+        color: white !important;
+    }
+
     /* Responsive font sizes */
     @media (max-width: 640px) {
       h1 { font-size: 2rem !important; }
@@ -61,23 +107,24 @@
     }
   </style>
 </head>
-<body class="dark"> <!-- default dark mode -->
+<body class="dark">
   <nav class="p-5 flex justify-between items-center border-b border-gray-700">
     <div class="flex items-center space-x-2">
       <img src="/logo.png" alt="TechSpark Logo" class="h-10 w-10">
       <span class="text-2xl font-bold">TechSpark</span>
     </div>
-    <div class="space-x-6 hidden md:block"> <!-- hide on mobile, show on medium+ -->
+    <div class="space-x-6 hidden md:block">
       <a href="/" class="hover:text-blue-300">Home</a>
       <a href="/about" class="hover:text-blue-300">About</a>
       <a href="/events" class="hover:text-blue-300">Events</a>
       <a href="/gallery" class="hover:text-blue-300">Gallery</a>
       <a href="/team" class="hover:text-blue-300">Team</a>
       <a href="/announcements" class="hover:text-blue-300">Announcements</a>
+      <a href="/achievements" class="hover:text-blue-300">Achievements</a>
+      <a href="/faq" class="hover:text-blue-300">FAQ</a>
       <a href="/contact" class="hover:text-blue-300">Contact</a>
     </div>
     <div class="flex items-center space-x-3">
-      <!-- Dark mode toggle switch -->
       <button id="darkModeToggle" class="bg-gray-700 px-3 py-1 rounded flex items-center space-x-2 hover:bg-gray-600">
         <span class="text-sm">🌙 Dark</span>
       </button>
